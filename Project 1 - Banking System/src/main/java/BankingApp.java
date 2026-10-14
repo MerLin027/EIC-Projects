@@ -1,6 +1,7 @@
 import enumeration.AccountMenu;
 import enumeration.AccountType;
 import enumeration.AppMenu;
+import enumeration.ConsoleColor;
 import exception.*;
 import model.Account;
 import model.Transaction;
@@ -8,6 +9,7 @@ import service.BankService;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.Arrays;
 import java.io.Console;
@@ -16,6 +18,11 @@ public final class BankingApp
 {
     private final BankService service = BankService.getInstance();
     private final Scanner sc = new Scanner(System.in);
+    //
+    private final Consumer <String> printSuccess = message -> System.out.println(ConsoleColor.GREEN.getCode() + message + ConsoleColor.RESET.getCode());
+    private final Consumer <String> printError = message -> System.out.println(ConsoleColor.RED.getCode() + message + ConsoleColor.RESET.getCode());
+    private final Consumer <String> printExit = message -> System.out.println(ConsoleColor.BLUE.getCode() + message + ConsoleColor.RESET.getCode());
+    //
     private final Supplier <Integer> readInt = () ->
     {
         while(true)
@@ -27,7 +34,7 @@ public final class BankingApp
             }
             catch (NumberFormatException e)
             {
-                System.out.println("Please enter a valid number.");
+                printError.accept("Please enter a valid number.");
             }
         }
     };
@@ -42,12 +49,12 @@ public final class BankingApp
             }
             catch (NumberFormatException e)
             {
-                System.out.println("Please enter a valid number.");
+                printError.accept("Please enter a valid number.");
             }
         }
     };
     //
-    Supplier <String> readPassword = () ->
+    private final Supplier <String> readPassword = () ->
     {
         Console console = System.console(); // it is an object allowing us to communicate with the system terminal/real console
         if(console == null)
@@ -78,7 +85,7 @@ public final class BankingApp
         String password;
         long accountNumber, totalHoldings, netHoldings;
         String intro = "Welcome to MerLin's Banking App!!";
-        System.out.println(intro);
+        printSuccess.accept(intro);
         while (true)
         {
             System.out.println(appMenuText);
@@ -86,7 +93,7 @@ public final class BankingApp
             Optional <AppMenu> ch = AppMenu.lookup(choice);
             if (ch.isEmpty())
             {
-                System.out.println("Invalid choice. Please try again.");
+                printError.accept("Invalid choice. Please try again.");
                 continue;
             }
             switch (ch.get())
@@ -102,14 +109,14 @@ public final class BankingApp
                         {
                             case 1 -> type = AccountType.SAVINGS;
                             case 2 -> type = AccountType.CURRENT;
-                            default -> System.out.println("Invalid choice, please try again.");
+                            default -> printError.accept("Invalid choice, please try again.");
                         }
                     } while(type == null);
                     System.out.println("Enter password: ");
                     password = readPassword.get();
                     accountNumber = service.createAccount(type, password);
-                    System.out.println("Generated Account Number: " + accountNumber);
-                    System.out.println("Account has been saved successfully."+"\n"+"Please do not forget your Account Number or Password.");
+                    printSuccess.accept("Generated Account Number: " + accountNumber);
+                    printSuccess.accept("Account has been saved successfully."+"\n"+"Please do not forget your Account Number or Password.");
                     break;
                 case DELETE_ACCOUNT:
                     System.out.println("Enter account number to be deleted: ");
@@ -117,11 +124,11 @@ public final class BankingApp
                     try
                     {
                         service.deleteAccount(accountNumber);
-                        System.out.println("Account has been deleted successfully.");
+                        printSuccess.accept("Account has been deleted successfully.");
                     }
                     catch (AccountNotFoundException e)
                     {
-                        System.out.println(e.getMessage());
+                        printError.accept(e.getMessage());
                     }
                     break;
                 case LOGIN:
@@ -136,7 +143,7 @@ public final class BankingApp
                     }
                     catch (AccountNotFoundException | InvalidCredentialsException e)
                     {
-                        System.out.println("Login failed: "+e.getMessage());
+                        printError.accept("Login failed: "+e.getMessage());
                     }
                     break;
                 case TOTAL_BANK_HOLDINGS:
@@ -169,7 +176,7 @@ public final class BankingApp
                     System.out.println("No. of Current Accounts: " + a[1]);
                     break;
                 case EXIT:
-                    System.out.println("Exiting...");
+                    printExit.accept("Exiting...");
                     System.exit(0);
             }
         }
@@ -181,7 +188,7 @@ public final class BankingApp
         long amount;
         String accountBalanceInfo;
         List<Transaction> transactionHistory;
-        System.out.println("Welcome, "+accountNumber);
+        printSuccess.accept("Welcome, "+accountNumber);
         while (true)
         {
             System.out.println(accountMenuText);
@@ -189,7 +196,7 @@ public final class BankingApp
             Optional <AccountMenu> ch = AccountMenu.lookup(choice);
             if (ch.isEmpty())
             {
-                System.out.println("Invalid choice. Please try again.");
+                printError.accept("Invalid choice. Please try again.");
                 continue;
             }
             switch (ch.get())
@@ -199,11 +206,11 @@ public final class BankingApp
                     amount = readLong.get();
                     if(amount <= 0)
                     {
-                        System.out.println("Invalid amount, please enter a positive number.");
+                        printError.accept("Invalid amount, please enter a positive number.");
                         break;
                     }
                     accountBalance = service.deposit(accountNumber, amount);
-                    System.out.println("Amount has successfully been deposited.");
+                    printSuccess.accept("Amount has successfully been deposited.");
                     System.out.println("New Balance: " + accountBalance);
                     break;
                 case WITHDRAW:
@@ -211,18 +218,18 @@ public final class BankingApp
                     amount = readLong.get();
                     if(amount <= 0)
                     {
-                        System.out.println("Invalid amount, please enter a positive number.");
+                        printError.accept("Invalid amount, please enter a positive number.");
                         break;
                     }
                     try
                     {
                         accountBalance = service.withdraw(accountNumber, amount);
-                        System.out.println("Amount has successfully been withdrawn.");
+                        printSuccess.accept("Amount has successfully been withdrawn.");
                         System.out.println("New Balance: " + accountBalance);
                     }
                     catch (NegativeSavingsBalanceException | NegativeCurrentBalanceException e)
                     {
-                        System.out.println("Invalid Action, Cannot withdraw due to: "+e.getMessage());
+                        printError.accept("Invalid Action, Cannot withdraw due to: "+e.getMessage());
                     }
                     break;
                 case VIEW_BALANCE:
@@ -241,7 +248,7 @@ public final class BankingApp
                     }
                     break;
                 case LOGOUT:
-                    System.out.println("Logging Out...");
+                    printExit.accept("Logging Out...");
                     return;
             }
         }
