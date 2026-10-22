@@ -8,9 +8,10 @@ public enum AccountMenu
     WITHDRAW(2),
     VIEW_BALANCE(3),
     VIEW_TRANSACTIONS(4),
-    LOGOUT(5);
+    UPDATE_PASSWORD(5),
+    LOGOUT(6);
     //
-    private int value;
+    private final int value;
     //
     AccountMenu(int value)
     {

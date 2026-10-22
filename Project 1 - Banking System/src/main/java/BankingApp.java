@@ -6,12 +6,10 @@ import exception.*;
 import model.Account;
 import model.Transaction;
 import service.BankService;
-import java.util.List;
-import java.util.Optional;
-import java.util.Scanner;
+
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import java.util.Arrays;
 import java.io.Console;
 
 public final class BankingApp
@@ -19,11 +17,11 @@ public final class BankingApp
     private final BankService service = BankService.getInstance();
     private final Scanner sc = new Scanner(System.in);
     //
-    private final Consumer <String> printSuccess = message -> System.out.println(ConsoleColor.GREEN.getCode() + message + ConsoleColor.RESET.getCode());
-    private final Consumer <String> printError = message -> System.out.println(ConsoleColor.RED.getCode() + message + ConsoleColor.RESET.getCode());
-    private final Consumer <String> printExit = message -> System.out.println(ConsoleColor.BLUE.getCode() + message + ConsoleColor.RESET.getCode());
+    public final Consumer <String> printSuccess = message -> System.out.println(ConsoleColor.GREEN.getCode() + message + ConsoleColor.RESET.getCode());
+    public final Consumer <String> printError = message -> System.out.println(ConsoleColor.RED.getCode() + message + ConsoleColor.RESET.getCode());
+    public final Consumer <String> printExit = message -> System.out.println(ConsoleColor.BLUE.getCode() + message + ConsoleColor.RESET.getCode());
     //
-    private final Supplier <Integer> readInt = () ->
+    public final Supplier <Integer> readInt = () ->
     {
         while(true)
         {
@@ -38,7 +36,7 @@ public final class BankingApp
             }
         }
     };
-    private final Supplier <Long> readLong = () ->
+    public final Supplier <Long> readLong = () ->
     {
         while(true)
         {
@@ -54,7 +52,7 @@ public final class BankingApp
         }
     };
     //
-    private final Supplier <String> readPassword = () ->
+    public final Supplier <String> readPassword = () ->
     {
         Console console = System.console(); // it is an object allowing us to communicate with the system terminal/real console
         if(console == null)
@@ -186,8 +184,11 @@ public final class BankingApp
     {
         long accountBalance;
         long amount;
-        String accountBalanceInfo;
+        String accountBalanceInfo, newPassword, password;
+        int maxAttempts;
+        boolean updated;
         List<Transaction> transactionHistory;
+        //
         printSuccess.accept("Welcome, "+accountNumber);
         while (true)
         {
@@ -247,6 +248,32 @@ public final class BankingApp
                         System.out.println("------------------------------------------");
                     }
                     break;
+                case UPDATE_PASSWORD:
+                    maxAttempts = 3;
+                    updated = false;
+                    for(int i=0;i<maxAttempts;i++)
+                    {
+                        System.out.println("Enter current password: ");
+                        password = readPassword.get();
+                        System.out.println("Enter new password: ");
+                        newPassword = readPassword.get();
+                        try
+                        {
+                            service.updatePassword(accountNumber, password, newPassword);
+                            updated = true;
+                            printSuccess.accept("Password has been updated successfully.");
+                            break;
+                        }
+                        catch (InvalidCredentialsException e)
+                        {
+                            printError.accept(e.getMessage());
+                            if(i!=maxAttempts-1)
+                                printError.accept((maxAttempts-i-1)+" attempts left.");
+                        }
+                    }
+                    if(!updated)
+                        printError.accept("Too many failed attempts. Returning to the account menu.");
+                    break;
                 case LOGOUT:
                     printExit.accept("Logging Out...");
                     return;
@@ -274,7 +301,8 @@ public final class BankingApp
                 2 - Withdraw Money
                 3 - View Balance
                 4 - View Transaction History
-                5 - Logout
+                5 - Update Password
+                6 - Logout
                 Enter your choice: """;
         //
         String accountTypeMenu = """
@@ -282,6 +310,17 @@ public final class BankingApp
                 2 - Current Account """;
         // Application flow starts here
         BankingApp app = new BankingApp();
-        app.appMenu(appMenuText, accountMenuText, accountTypeMenu);
+        try
+        {
+            app.appMenu(appMenuText, accountMenuText, accountTypeMenu);
+        }
+        catch (NoSuchElementException e)
+        {
+            app.printError.accept("Input stream closed. Exiting...");
+        }
+        catch (Exception e)
+        {
+            app.printError.accept("Something went wrong...\n"+e.getMessage());
+        }
     }
 }

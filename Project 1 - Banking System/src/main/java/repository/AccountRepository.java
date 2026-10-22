@@ -11,7 +11,7 @@ public final class AccountRepository
     private static volatile AccountRepository instance;
     private final HashMap <Long, Account> accounts = new HashMap <> ();
     //
-    private AccountRepository()
+    AccountRepository()
     {
     }
     //

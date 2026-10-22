@@ -13,7 +13,6 @@ import repository.AccountRepository;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 // account creation
 // account deletion
@@ -34,10 +33,16 @@ public class BankService
     private static BankService instance;
     // Lazy Loading - an object is created only when it is first requested and its instance is returned everytime
     private long countAccountNumber = 1000;
-    private final AccountRepository repository = AccountRepository.getInstance();
+    private final AccountRepository repository; // = AccountRepository.getInstance();
     //
     private BankService()
     {
+        repository = AccountRepository.getInstance();
+    }
+    //
+    BankService(AccountRepository repository)
+    {
+        this.repository = repository;
     }
     //
     public static synchronized BankService getInstance()
@@ -87,11 +92,11 @@ public class BankService
     {
         if(repository.findByAccountNumber(accountNumber).isEmpty())
         {
-            throw new AccountNotFoundException("Account not found");
+            throw new AccountNotFoundException("Account not found.");
         }
         if(!repository.checkPassword(accountNumber, password))
         {
-            throw new InvalidCredentialsException("Invalid credentials");
+            throw new InvalidCredentialsException("Invalid credentials.");
         }
     }
     //
@@ -116,7 +121,7 @@ public class BankService
             accountBalanceInfo =
                     """
                     Account type: Current
-                    Current Balance: %d
+                    Balance: %d
                     Overdraft Limit: %d """.formatted(account.getBalance(), ((CurrentAccount) account).getOverdraftLimit());
         }
         else
@@ -124,7 +129,7 @@ public class BankService
             accountBalanceInfo =
                     """
                     Account type: Savings
-                    Current Balance: %d """.formatted(account.getBalance());
+                    Balance: %d """.formatted(account.getBalance());
         }
         return accountBalanceInfo;
     }
@@ -180,5 +185,18 @@ public class BankService
         a[0] = accountList.stream().filter(acc -> acc instanceof SavingsAccount).count();
         a[1] = accountList.stream().filter(acc -> acc instanceof CurrentAccount).count();
         return a;
+    }
+    //
+    public void updatePassword(long accountNumber, String currentPassword, String newPassword) throws InvalidCredentialsException
+    {
+        if(repository.checkPassword(accountNumber, currentPassword))
+        {
+            Account account =  repository.findByAccountNumber(accountNumber).get();
+            account.setPassword(newPassword);
+        }
+        else
+        {
+            throw new InvalidCredentialsException("Invalid credentials.");
+        }
     }
 }
