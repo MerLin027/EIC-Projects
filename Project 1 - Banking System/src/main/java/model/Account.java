@@ -9,7 +9,8 @@ public sealed abstract class Account permits SavingsAccount, CurrentAccount
     protected long accountNumber;
     protected String password;
     protected long balance;
-    protected List <Transaction> transactions = new ArrayList<Transaction>();
+    protected List <Transaction> transactions = new ArrayList<>();
+    protected long dailyWithdrawalLimit;
     //
     public Account(long accountNumber, String password)
     {
