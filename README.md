@@ -1,21 +1,29 @@
-# EIC-Projects
+# EIC Projects
 
-A collection of practice mini-projects built to strengthen my Java development skills and explore different technologies.
+A collection of Java practice mini-projects focused on building a strong foundation in Java development and backend engineering.
 
 ## Projects
 
-### 1. Banking System
-A console-based banking application focused on **Core Java**, OOP principles, and collections.
+### 1. Banking System — Core Java
+A menu-driven console application simulating basic banking operations.
 
-### 2. Employee Management REST API
-A RESTful API focused on **Spring Framework, Spring Boot, and Spring Data JPA**, covering employee management and database operations.
+- Account creation and login
+- Deposits, withdrawals, and balance enquiry
+- Transaction history
+- OOP, collections, input validation, and exception handling
+
+### 2. Employee Management REST API — Spring Boot
+A RESTful API for managing employee records using Spring technologies.
+
+- Employee CRUD operations
+- Spring Boot, Spring Web, and Spring Data JPA
+- Database integration with H2 or MySQL
+- DTOs, validation, and global exception handling
+- Pagination, sorting, and Swagger/OpenAPI documentation
 
 ## Tech Stack
-- Java
-- Spring Framework & Spring Boot
-- Spring Data JPA
-- Maven
-- Git & GitHub
+
+Java · Maven · Spring Boot · Spring Data JPA · H2/MySQL · Git
 
 ---
 
