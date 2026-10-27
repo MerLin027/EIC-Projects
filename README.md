@@ -1,4 +1,4 @@
-# EIC Projects
+# EIC-Projects
 
 A collection of Java practice mini-projects focused on building a strong foundation in Java development and backend engineering.
 
