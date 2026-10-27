@@ -1,4 +1,4 @@
-# EIC Projects
+# EIC-Projects
 
 A collection of practice mini-projects built to strengthen my Java development skills and explore different technologies.
 
