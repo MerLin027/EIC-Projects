@@ -1,12 +1,16 @@
 package com.eic.employee_management_api.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.PastOrPresent;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "employees")
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Employee
 {
     @Id
