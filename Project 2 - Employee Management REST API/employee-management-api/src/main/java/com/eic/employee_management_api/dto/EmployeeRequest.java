@@ -4,7 +4,7 @@ import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 
-public record EmployeeRequest(@NotBlank(message = "First Name is reuired")
+public record EmployeeRequest(@NotBlank(message = "First Name is required")
                               String firstName,
                               @NotBlank(message = "Last Name is required")
                               String lastName,
