@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import java.time.LocalDateTime;
 import java.util.Map;
 
-@JsonInclude(JsonInclude.Include.NON_NULL) // Only Non Null values are displayed when record is returned
+@JsonInclude(JsonInclude.Include.NON_NULL) // Only Non-Null values are displayed when record is returned
 public record ErrorResponse(LocalDateTime timestamp,
                             int status,
                             String error,

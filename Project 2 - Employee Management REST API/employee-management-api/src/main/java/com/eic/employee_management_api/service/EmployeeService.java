@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.function.Function;
 
@@ -58,6 +59,7 @@ public class EmployeeService
             throw new ResourceNotFoundException("Employee with id " + id + " not found");
         repository.deleteById(id);
     }
+    @Transactional
     public EmployeeResponse updateById(Long id, EmployeeRequest employeeRequest) throws ResourceNotFoundException, DuplicateResourceException
     {
         if(!repository.existsById(id))
