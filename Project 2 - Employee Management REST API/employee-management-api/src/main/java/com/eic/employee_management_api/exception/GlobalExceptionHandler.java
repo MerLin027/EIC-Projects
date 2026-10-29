@@ -15,7 +15,9 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 // Generally, we would have to use try-catch for every method in the REST Controller class, resulting in a cluttered mess
 // Which is why we're using a separate class for it
@@ -75,7 +77,7 @@ public class GlobalExceptionHandler
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(response);
     }
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity <ErrorResponse> handleFieldValidation(MethodArgumentNotValidException e,
+    public ResponseEntity <ErrorResponse> handleRequestFieldValidation(MethodArgumentNotValidException e,
                                                                        HttpServletRequest request)
     {
         Map <String, String> details = new HashMap <> ();
@@ -94,7 +96,7 @@ public class GlobalExceptionHandler
                 (LocalDateTime.now(),
                         400,
                         "Bad Request",
-                        e.getMessage(),
+                        "Request Validation Failed",
                         request.getRequestURI(),
                         details);
         return ResponseEntity.badRequest().body(response);
