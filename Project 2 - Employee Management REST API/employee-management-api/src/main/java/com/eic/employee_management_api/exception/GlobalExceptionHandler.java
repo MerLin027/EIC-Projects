@@ -12,12 +12,11 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 // Generally, we would have to use try-catch for every method in the REST Controller class, resulting in a cluttered mess
 // Which is why we're using a separate class for it
@@ -28,13 +27,13 @@ public class GlobalExceptionHandler
 {
     @ExceptionHandler(ResourceNotFoundException.class)
     // When this type of exception is thrown, run this specific method
-    public ResponseEntity <ErrorResponse> handleNotFound(ResourceNotFoundException e, HttpServletRequest request)
+    public ResponseEntity <ErrorResponse> handleResourceNotFound(ResourceNotFoundException e, HttpServletRequest request)
     {
         ErrorResponse response = new ErrorResponse
                 (LocalDateTime.now(),
                         404,
-                        "Not Found",
-                        e.getMessage(),
+                        "Not Found pls find elsewhere",
+                        e.toString(),
                         request.getRequestURI(),
                         null);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
@@ -140,6 +139,18 @@ public class GlobalExceptionHandler
                         null);
         return ResponseEntity.badRequest().body(response);
     }
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity <ErrorResponse> handleUnmappedResourceRequest(NoResourceFoundException e, HttpServletRequest request)
+    {
+        ErrorResponse response = new ErrorResponse
+                (LocalDateTime.now(),
+                        404,
+                        "Not Found",
+                        e.getMessage(),
+                        request.getRequestURI(),
+                        null);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
     @ExceptionHandler(Exception.class)
     public ResponseEntity <ErrorResponse> handleGenericException(Exception e, HttpServletRequest request)
     {
@@ -147,7 +158,7 @@ public class GlobalExceptionHandler
                 (LocalDateTime.now(),
                         500,
                         "Internal Server Error",
-                        "Something went wrong",
+                        "Something went wrong: "+e.getMessage(),
                         request.getRequestURI(),
                         null);
         return ResponseEntity.internalServerError().body(response);
