@@ -32,7 +32,7 @@ public class GlobalExceptionHandler
         ErrorResponse response = new ErrorResponse
                 (LocalDateTime.now(),
                         404,
-                        "Not Found pls find elsewhere",
+                        "Not Found",
                         e.toString(),
                         request.getRequestURI(),
                         null);
