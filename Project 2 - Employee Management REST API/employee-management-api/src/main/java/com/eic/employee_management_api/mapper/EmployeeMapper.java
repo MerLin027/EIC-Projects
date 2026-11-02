@@ -1,10 +1,21 @@
 package com.eic.employee_management_api.mapper;
 
+import com.eic.employee_management_api.dto.EmployeeRequest;
+import com.eic.employee_management_api.dto.EmployeeResponse;
+import com.eic.employee_management_api.entity.Employee;
 import org.mapstruct.Mapper;
-import org.mapstruct.MapperConfig;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
-public class EmployeeMapper
+public interface EmployeeMapper
 {
-    
+    @Mapping(target = "id", ignore = true)
+    Employee toEntity(EmployeeRequest request);
+    // Converts EmployeeRequest to Employee
+    EmployeeResponse toResponse(Employee employee);
+    // Converts Employee to EmployeeResponse
+    @Mapping(target = "id", ignore = true)
+    Employee updateEntity(EmployeeRequest request, @MappingTarget Employee employee);
+    // Updates existing Employee through EmployeeRequest
 }
