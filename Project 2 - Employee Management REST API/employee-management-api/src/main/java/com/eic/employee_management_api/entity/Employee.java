@@ -29,4 +29,7 @@ public class Employee
     @Column(nullable = false)
     private Double salary;
     private LocalDate joiningDate;
+    @OneToOne(cascade = CascadeType.ALL, fetch =  FetchType.LAZY, orphanRemoval = true)
+    @JoinColumn(name = "address_id") // names the Foreign Key column that gets added to the employees table
+    private Address address;
 }

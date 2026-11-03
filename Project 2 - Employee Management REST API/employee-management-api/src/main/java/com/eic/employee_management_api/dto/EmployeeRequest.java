@@ -1,5 +1,6 @@
 package com.eic.employee_management_api.dto;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
@@ -15,6 +16,7 @@ public record EmployeeRequest(@NotBlank(message = "First Name is required")
                               String department,
                               @NotNull(message = "Salary cannot be null") @PositiveOrZero(message = "Salary must always be positive")
                               Double salary,
-                              LocalDate joiningDate)
+                              LocalDate joiningDate,
+                              @Valid AddressRequest address)
 {
 }

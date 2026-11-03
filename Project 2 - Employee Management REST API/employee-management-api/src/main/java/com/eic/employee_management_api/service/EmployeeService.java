@@ -10,6 +10,7 @@ import com.eic.employee_management_api.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,10 +30,13 @@ public class EmployeeService
             throw new DuplicateResourceException("Employee with email " + employee.getEmail() + " already exists");
         return mapper.toResponse(repository.save(employee));
     }
+    @Transactional(readOnly = true) // Indicates that the method is read-only -> No data is changed
+    @EntityGraph(attributePaths = "address")
     public Page <EmployeeResponse> findAll(Pageable pageable)
     {
         return repository.findAll(pageable).map(mapper::toResponse); // employee -> mapper.toResponse(employee)
     }
+    @Transactional(readOnly = true) // Indicates that the method is read-only -> No data is changed
     public EmployeeResponse findById(Long id) throws ResourceNotFoundException
     {
         Employee employee = repository.findById(id).orElseThrow(() ->

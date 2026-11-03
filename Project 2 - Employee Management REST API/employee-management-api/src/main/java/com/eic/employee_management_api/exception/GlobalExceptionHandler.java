@@ -57,7 +57,7 @@ public class GlobalExceptionHandler
                 (LocalDateTime.now(),
                         400,
                         "Bad Request",
-                        e.getMessage(),
+                        "Malformed or invalid JSON request body",
                         request.getRequestURI(),
                         null);
         return ResponseEntity.badRequest().body(response);
