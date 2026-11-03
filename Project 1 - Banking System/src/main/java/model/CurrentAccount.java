@@ -14,7 +14,7 @@ public final class CurrentAccount extends Account
     }
     //
     @Override
-    public long withdraw(long amount) throws NegativeCurrentBalanceException
+    public synchronized long withdraw(long amount) throws NegativeCurrentBalanceException
     {
         if(getBalance() >= amount)
         {

@@ -54,7 +54,8 @@ public final class BankingApp
     //
     public final Supplier <String> readPassword = () ->
     {
-        Console console = System.console(); // it is an object allowing us to communicate with the system terminal/real console
+        Console console = System.console();
+        // Console is an object allowing us to communicate with the system terminal/real console
         if(console == null)
         {
             return sc.nextLine();
@@ -82,8 +83,7 @@ public final class BankingApp
         AccountType type;
         String password;
         long accountNumber, totalHoldings, netHoldings;
-        String intro = "Welcome to MerLin's Banking App!!";
-        printSuccess.accept(intro);
+        printSuccess.accept("Welcome to MerLin's Banking App!!");
         while (true)
         {
             System.out.println(appMenuText);
@@ -172,6 +172,16 @@ public final class BankingApp
                     long a [] = service.viewCountOfAccounts();
                     System.out.println("No. of Savings Accounts: " + a[0]);
                     System.out.println("No. of Current Accounts: " + a[1]);
+                    break;
+                case MULTITHREADING_DEMO:
+                    try
+                    {
+                        service.multithreadingDemo();
+                    }
+                    catch (InterruptedException e)
+                    {
+                        System.out.println(e.getMessage());
+                    }
                     break;
                 case EXIT:
                     printExit.accept("Exiting...");
@@ -293,7 +303,8 @@ public final class BankingApp
                 6 - View Top 3 Richest Accounts
                 7 - View Top 5 Balances
                 8 - Count of Accounts
-                9 - Exit
+                9 - Multithreading Demonstration
+                10 - Exit
                 Enter your choice: """;
         //
         String accountMenuText = """

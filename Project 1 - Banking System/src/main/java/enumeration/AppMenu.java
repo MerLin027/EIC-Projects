@@ -12,7 +12,8 @@ public enum AppMenu
     TOP_3_ACCOUNTS(6),
     TOP_5_BALANCES(7),
     COUNT_OF_ACCOUNTS(8),
-    EXIT(9);
+    MULTITHREADING_DEMO(9),
+    EXIT(10);
     //
     private final int value; // each enum constant has its own value
     //

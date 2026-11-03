@@ -13,7 +13,7 @@ public final class SavingsAccount extends Account
     }
     //
     @Override
-    public long withdraw(long amount) throws NegativeSavingsBalanceException
+    public synchronized long withdraw(long amount) throws NegativeSavingsBalanceException
     {
         if(getBalance() >= amount)
         {

@@ -10,7 +10,6 @@ public sealed abstract class Account permits SavingsAccount, CurrentAccount
     protected String password;
     protected long balance;
     protected List <Transaction> transactions = new ArrayList<>();
-    protected long dailyWithdrawalLimit;
     //
     public Account(long accountNumber, String password)
     {
@@ -39,14 +38,14 @@ public sealed abstract class Account permits SavingsAccount, CurrentAccount
         this.password = password;
     }
     //
-    public long deposit(long amount)
+    public synchronized long deposit(long amount)
     {
         setBalance(getBalance() + amount);
         transactions.add(new Transaction("Deposit", amount, Instant.now(), this.balance));
         return getBalance();
     }
     //
-    public abstract long withdraw(long amount);
+    public abstract long  withdraw(long amount);
     //
     @Override
     public String toString()

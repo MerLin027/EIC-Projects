@@ -13,15 +13,7 @@ import repository.AccountRepository;
 
 import java.util.Comparator;
 import java.util.List;
-
-// account creation
-// account deletion
-// login
-// deposit
-// withdraw
-// get balance
-// get history
-// find account
+import java.util.concurrent.atomic.AtomicLong;
 
 public class BankService
 {
@@ -40,7 +32,7 @@ public class BankService
         repository = AccountRepository.getInstance();
     }
     //
-    BankService(AccountRepository repository)
+    BankService(AccountRepository repository) // For unit testing
     {
         this.repository = repository;
     }
@@ -198,5 +190,55 @@ public class BankService
         {
             throw new InvalidCredentialsException("Invalid credentials.");
         }
+    }
+    public void multithreadingDemo() throws InterruptedException
+    {
+        long accountNumber = 999;
+        String password = "123";
+        long expectedBalance = 500000;
+        long expectedTransactions = 10001;
+        Account account = new SavingsAccount(accountNumber, password);
+        account.setBalance(expectedBalance);
+        AtomicLong count = new AtomicLong(0);
+        // Initial balance = 500000
+        Runnable deposit = () ->
+        {
+            for(int i = 0; i < 5000; i++)
+            {
+                try
+                {
+                    account.deposit(100);
+                }
+                catch (Exception e)
+                {
+                    count.incrementAndGet();
+                }
+            }
+        };
+        Runnable withdraw =  () ->
+        {
+            for(int i = 0; i < 5000; i++)
+            {
+                try
+                {
+                    account.withdraw(100);
+                }
+                catch (Exception e)
+                {
+                    count.incrementAndGet();
+                }
+            }
+        };
+        Thread a = new Thread(deposit);
+        Thread b = new Thread(withdraw);
+        a.start();
+        b.start();
+        a.join();
+        b.join();
+        System.out.println("Expected Balance: "+expectedBalance);
+        System.out.println("Actual Balance: "+account.getBalance());
+        System.out.println("Expected Transactions: "+expectedTransactions);
+        System.out.println("Actual Transactions: "+account.getTransactions().size());
+        System.out.println("Transaction Failures: "+count.get());
     }
 }
