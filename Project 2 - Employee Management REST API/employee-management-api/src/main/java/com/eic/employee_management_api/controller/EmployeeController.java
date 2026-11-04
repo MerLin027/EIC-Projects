@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/employees")
 @RequiredArgsConstructor
@@ -32,11 +34,11 @@ public class EmployeeController
     // GET /employees
     @GetMapping
     @Operation(summary = "Retrieves all employees")
-    public ResponseEntity <PagedModel <EmployeeResponse>> retrieveAllEmployees(@PageableDefault(size = 5) Pageable pageable)
+    public ResponseEntity <List<EmployeeResponse>> retrieveAllEmployees()
     {
         // Page is returned from service.findAll(pageable) and
         // is wrapped in PagedModel which holds its stable JSON shape
-        return ResponseEntity.ok(new PagedModel <> (service.findAll(pageable)));
+        return ResponseEntity.ok().body(service.findAll());
     }
     // GET /employees/{id}
     @GetMapping("/{id}")

@@ -14,6 +14,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.function.Function;
 
 @Service
@@ -32,9 +33,9 @@ public class EmployeeService
     }
     @Transactional(readOnly = true) // Indicates that the method is read-only -> No data is changed
     @EntityGraph(attributePaths = "address")
-    public Page <EmployeeResponse> findAll(Pageable pageable)
+    public List <EmployeeResponse> findAll()
     {
-        return repository.findAll(pageable).map(mapper::toResponse); // employee -> mapper.toResponse(employee)
+        return repository.findAll().stream().map(mapper::toResponse).toList(); // employee -> mapper.toResponse(employee)
     }
     @Transactional(readOnly = true) // Indicates that the method is read-only -> No data is changed
     public EmployeeResponse findById(Long id) throws ResourceNotFoundException
