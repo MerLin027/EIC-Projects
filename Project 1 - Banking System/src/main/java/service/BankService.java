@@ -233,8 +233,8 @@ public class BankService
         Thread b = new Thread(withdraw);
         a.start();
         b.start();
-        a.join();
-        b.join();
+        a.join(); // Calling thread (main) waits for 'a' to finish execution
+        b.join(); // Calling thread (main) waits for 'b' to finish execution
         System.out.println("Expected Balance: "+expectedBalance);
         System.out.println("Actual Balance: "+account.getBalance());
         System.out.println("Expected Transactions: "+expectedTransactions);
