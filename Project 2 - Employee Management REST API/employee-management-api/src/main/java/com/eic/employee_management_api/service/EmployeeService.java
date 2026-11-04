@@ -2,6 +2,7 @@ package com.eic.employee_management_api.service;
 
 import com.eic.employee_management_api.dto.EmployeeRequest;
 import com.eic.employee_management_api.dto.EmployeeResponse;
+import com.eic.employee_management_api.dto.PageResponse;
 import com.eic.employee_management_api.entity.Employee;
 import com.eic.employee_management_api.exception.DuplicateResourceException;
 import com.eic.employee_management_api.exception.ResourceNotFoundException;
@@ -14,6 +15,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
 
@@ -32,10 +34,18 @@ public class EmployeeService
         return mapper.toResponse(repository.save(employee));
     }
     @Transactional(readOnly = true) // Indicates that the method is read-only -> No data is changed
-    @EntityGraph(attributePaths = "address")
-    public List <EmployeeResponse> findAll()
+    public PageResponse findAll(Long page, Long size)
     {
-        return repository.findAll().stream().map(mapper::toResponse).toList(); // employee -> mapper.toResponse(employee)
+        Long totalElements = repository.count();
+        Long totalPages = (long) Math.ceil((double) repository.count() / size);
+        List <EmployeeResponse> responseList=  repository.findAll()
+                .stream()
+                .sorted(Comparator.comparing(Employee::getId))
+                .skip(page*size)
+                .limit(size)
+                .map(mapper::toResponse)
+                .toList();
+        return new PageResponse(responseList, page, size, totalElements, totalPages);
     }
     @Transactional(readOnly = true) // Indicates that the method is read-only -> No data is changed
     public EmployeeResponse findById(Long id) throws ResourceNotFoundException

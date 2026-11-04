@@ -1,14 +1,12 @@
 package com.eic.employee_management_api.mapper;
 
-import com.eic.employee_management_api.dto.AddressRequest;
-import com.eic.employee_management_api.dto.AddressResponse;
-import com.eic.employee_management_api.dto.EmployeeRequest;
-import com.eic.employee_management_api.dto.EmployeeResponse;
+import com.eic.employee_management_api.dto.*;
 import com.eic.employee_management_api.entity.Address;
 import com.eic.employee_management_api.entity.Employee;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.springframework.data.domain.PageRequest;
 
 @Mapper(componentModel = "spring")
 public interface EmployeeMapper

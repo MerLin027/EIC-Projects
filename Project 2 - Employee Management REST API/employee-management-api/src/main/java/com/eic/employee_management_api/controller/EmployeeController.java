@@ -2,14 +2,14 @@ package com.eic.employee_management_api.controller;
 
 import com.eic.employee_management_api.dto.EmployeeRequest;
 import com.eic.employee_management_api.dto.EmployeeResponse;
+import com.eic.employee_management_api.dto.PageResponse;
 import com.eic.employee_management_api.service.EmployeeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,11 +34,10 @@ public class EmployeeController
     // GET /employees
     @GetMapping
     @Operation(summary = "Retrieves all employees")
-    public ResponseEntity <List<EmployeeResponse>> retrieveAllEmployees()
+    public ResponseEntity <PageResponse> retrieveAllEmployees(@RequestParam(required = false, defaultValue = "0") @PositiveOrZero Long page,
+                                                              @RequestParam(required = false, defaultValue = "2") @Positive Long size)
     {
-        // Page is returned from service.findAll(pageable) and
-        // is wrapped in PagedModel which holds its stable JSON shape
-        return ResponseEntity.ok().body(service.findAll());
+        return ResponseEntity.ok().body(service.findAll(page, size));
     }
     // GET /employees/{id}
     @GetMapping("/{id}")
