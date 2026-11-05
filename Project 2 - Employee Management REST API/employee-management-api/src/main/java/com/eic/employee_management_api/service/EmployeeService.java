@@ -74,10 +74,7 @@ public class EmployeeService
                 ResourceNotFoundException("Employee with id " + id + " not found"));
         if(employee.getStatus().equals(targetStatus))
             throw new InvalidStatusChangeException("Employee with id " + id + " is already "+targetStatus);
-        if(targetStatus.equals(EmployeeStatus.ACTIVE))
-            employee.setStatus(EmployeeStatus.ACTIVE);
-        else
-            employee.setStatus(EmployeeStatus.INACTIVE);
-        repository.save(employee);
+       employee.setStatus(targetStatus);
+       repository.save(employee);
     }
 }
