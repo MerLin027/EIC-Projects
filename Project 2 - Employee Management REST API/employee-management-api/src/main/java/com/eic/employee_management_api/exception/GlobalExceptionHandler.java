@@ -1,5 +1,6 @@
 package com.eic.employee_management_api.exception;
 
+import com.eic.employee_management_api.dto.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.core.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
@@ -150,6 +151,18 @@ public class GlobalExceptionHandler
                         request.getRequestURI(),
                         null);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+    @ExceptionHandler(InvalidStatusChangeException.class)
+    public ResponseEntity <ErrorResponse> handleInvalidStatusChangeException(InvalidStatusChangeException e, HttpServletRequest request)
+    {
+        ErrorResponse response = new ErrorResponse
+                (LocalDateTime.now(),
+                        409,
+                        "Conflict",
+                        e.getMessage(),
+                        request.getRequestURI(),
+                        null);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
     @ExceptionHandler(Exception.class)
     public ResponseEntity <ErrorResponse> handleGenericException(Exception e, HttpServletRequest request)

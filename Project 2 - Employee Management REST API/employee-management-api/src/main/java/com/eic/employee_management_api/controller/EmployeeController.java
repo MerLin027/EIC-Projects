@@ -3,6 +3,8 @@ package com.eic.employee_management_api.controller;
 import com.eic.employee_management_api.dto.EmployeeRequest;
 import com.eic.employee_management_api.dto.EmployeeResponse;
 import com.eic.employee_management_api.dto.PageResponse;
+import com.eic.employee_management_api.entity.Employee;
+import com.eic.employee_management_api.enumeration.EmployeeStatus;
 import com.eic.employee_management_api.service.EmployeeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -62,5 +64,13 @@ public class EmployeeController
     {
         EmployeeResponse updatedEmployee = service.updateById(id, employee);
         return ResponseEntity.ok(updatedEmployee);
+    }
+    // PATCH /employees/{id}/{status}
+    @PatchMapping("/{id}/{status}")
+    @Operation(summary = "Updates status of an employee")
+    public ResponseEntity <String>  updateEmployeeStatus(@PathVariable Long id, @PathVariable EmployeeStatus status)
+    {
+        service.updateStatus(id, status);
+        return ResponseEntity.ok("Employee status updated successfully");
     }
 }

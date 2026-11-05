@@ -1,6 +1,6 @@
 package com.eic.employee_management_api.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.eic.employee_management_api.enumeration.EmployeeStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,15 +11,17 @@ import java.time.LocalDate;
 @Setter
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class Employee
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false) @JsonProperty("First Name")
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private EmployeeStatus status = EmployeeStatus.ACTIVE;
+    @Column(nullable = false)
     private String firstName;
-    @Column(nullable = false) @JsonProperty("Last Name")
+    @Column(nullable = false)
     private String lastName;
     @Column(nullable = false, unique = true)
     private String email;

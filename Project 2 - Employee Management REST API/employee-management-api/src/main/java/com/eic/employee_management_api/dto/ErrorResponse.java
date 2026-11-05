@@ -1,4 +1,4 @@
-package com.eic.employee_management_api.exception;
+package com.eic.employee_management_api.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

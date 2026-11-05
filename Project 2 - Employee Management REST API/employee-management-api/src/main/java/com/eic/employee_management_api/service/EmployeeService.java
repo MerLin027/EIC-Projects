@@ -4,20 +4,18 @@ import com.eic.employee_management_api.dto.EmployeeRequest;
 import com.eic.employee_management_api.dto.EmployeeResponse;
 import com.eic.employee_management_api.dto.PageResponse;
 import com.eic.employee_management_api.entity.Employee;
+import com.eic.employee_management_api.enumeration.EmployeeStatus;
 import com.eic.employee_management_api.exception.DuplicateResourceException;
+import com.eic.employee_management_api.exception.InvalidStatusChangeException;
 import com.eic.employee_management_api.exception.ResourceNotFoundException;
 import com.eic.employee_management_api.mapper.EmployeeMapper;
 import com.eic.employee_management_api.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
@@ -69,5 +67,17 @@ public class EmployeeService
             throw new DuplicateResourceException("Employee with email " + employeeRequest.email() + " already exists");
         Employee updatedEmployee = mapper.updateEntity(employeeRequest, employee);
         return mapper.toResponse(repository.save(updatedEmployee));
+    }
+    public void updateStatus(Long id, EmployeeStatus targetStatus)
+    {
+        Employee employee = repository.findById(id).orElseThrow(() -> new
+                ResourceNotFoundException("Employee with id " + id + " not found"));
+        if(employee.getStatus().equals(targetStatus))
+            throw new InvalidStatusChangeException("Employee with id " + id + " is already "+targetStatus);
+        if(targetStatus.equals(EmployeeStatus.ACTIVE))
+            employee.setStatus(EmployeeStatus.ACTIVE);
+        else
+            employee.setStatus(EmployeeStatus.INACTIVE);
+        repository.save(employee);
     }
 }
