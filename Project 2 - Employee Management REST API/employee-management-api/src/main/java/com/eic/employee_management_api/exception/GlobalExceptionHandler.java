@@ -34,7 +34,7 @@ public class GlobalExceptionHandler
                 (LocalDateTime.now(),
                         404,
                         "Not Found",
-                        e.toString(),
+                        e.getMessage(),
                         request.getRequestURI(),
                         null);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
@@ -127,19 +127,6 @@ public class GlobalExceptionHandler
                         null);
         return ResponseEntity.badRequest().body(response);
     }
-    @ExceptionHandler(PropertyReferenceException.class)
-    public ResponseEntity <ErrorResponse> handleInvalidSortRequestParameter(PropertyReferenceException e,
-                                                                   HttpServletRequest request)
-    {
-        ErrorResponse response = new ErrorResponse
-                (LocalDateTime.now(),
-                        400,
-                        "Bad Request",
-                        "Invalid Sort Field",
-                        request.getRequestURI(),
-                        null);
-        return ResponseEntity.badRequest().body(response);
-    }
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity <ErrorResponse> handleUnmappedResourceRequest(NoResourceFoundException e, HttpServletRequest request)
     {
@@ -171,7 +158,7 @@ public class GlobalExceptionHandler
                 (LocalDateTime.now(),
                         500,
                         "Internal Server Error",
-                        "Something went wrong: "+e.getMessage(),
+                        "Something went wrong",
                         request.getRequestURI(),
                         null);
         return ResponseEntity.internalServerError().body(response);
