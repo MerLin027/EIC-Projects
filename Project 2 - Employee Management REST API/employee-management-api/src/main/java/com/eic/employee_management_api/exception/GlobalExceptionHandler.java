@@ -2,22 +2,27 @@ package com.eic.employee_management_api.exception;
 
 import com.eic.employee_management_api.dto.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.data.core.PropertyReferenceException;
+import org.springframework.context.MessageSourceResolvable;
+import org.springframework.core.MethodParameter;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.method.ParameterValidationResult;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 // Generally, we would have to use try-catch for every method in the REST Controller class, resulting in a cluttered mess
 // Which is why we're using a separate class for it
@@ -44,12 +49,12 @@ public class GlobalExceptionHandler
     {
         ErrorResponse response = new ErrorResponse
                 (LocalDateTime.now(),
-                        400,
-                        "Bad Request",
+                        409,
+                        "Conflict",
                         e.getMessage(),
                         request.getRequestURI(),
                         null);
-        return ResponseEntity.badRequest().body(response);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity <ErrorResponse> handleInvalidJsonFormat(HttpMessageNotReadableException e, HttpServletRequest request)
@@ -122,7 +127,7 @@ public class GlobalExceptionHandler
                 (LocalDateTime.now(),
                         400,
                         "Bad Request",
-                        "Invalid Path Variable",
+                        "Invalid value '" + e.getValue() + "' for parameter '" + e.getName() + "'",
                         request.getRequestURI(),
                         null);
         return ResponseEntity.badRequest().body(response);
@@ -147,6 +152,40 @@ public class GlobalExceptionHandler
                         409,
                         "Conflict",
                         e.getMessage(),
+                        request.getRequestURI(),
+                        null);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ResponseEntity <ErrorResponse> handleQueryParameterValidation(HandlerMethodValidationException e, HttpServletRequest request)
+    {
+        Map<String, String> details = new HashMap<>();
+        for (ParameterValidationResult result : e.getParameterValidationResults())
+        {
+            String message = result.getResolvableErrors()
+                    .stream()
+                    .map(MessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.joining(", "));
+            details.put(result.getMethodParameter().getParameterName(), message);
+        }
+        ErrorResponse response = new ErrorResponse
+                (LocalDateTime.now(),
+                        400,
+                        "Bad Request",
+                        "Invalid Query Parameter",
+                        request.getRequestURI(),
+                        details);
+        return ResponseEntity.badRequest().body(response);
+    }
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> handlesDuplicateResourceForConcurrentRequest(DataIntegrityViolationException e,
+                                                                      HttpServletRequest request)
+    {
+        ErrorResponse response = new ErrorResponse
+                (LocalDateTime.now(),
+                        409,
+                        "Conflict",
+                        "Request conflicts with existing data",
                         request.getRequestURI(),
                         null);
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
