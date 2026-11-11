@@ -14,6 +14,9 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,15 +41,12 @@ public class EmployeeController
     // GET /employees
     @GetMapping
     @Operation(summary = "Retrieves all employees")
-    public ResponseEntity <PageResponse> retrieveAllEmployees(@RequestParam(required = false, defaultValue = "0")
-                                                              @PositiveOrZero(message = "Page should always be >= 0")
-                                                              Long page,
-                                                              @RequestParam(required = false, defaultValue = "2")
-                                                              @Positive(message = "Size should always be > 0")
-                                                              @Max(100)
-                                                              Long size)
+    public ResponseEntity <PagedModel<EmployeeResponse>> retrieveAllEmployees(@PageableDefault(size = 5, sort = "id")
+                                                                              Pageable pageable)
     {
-        return ResponseEntity.ok().body(service.findAll(page, size));
+        // Page is returned from service.findAll(pageable) and
+        // is wrapped in PagedModel which holds its stable JSON shape
+        return ResponseEntity.ok(new PagedModel <> (service.findAll(pageable)));
     }
     // GET /employees/{id}
     @GetMapping("/{id}")

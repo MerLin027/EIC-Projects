@@ -1,6 +1,5 @@
-package factories;
+package factory;
 
-import model.Account;
 import model.CurrentAccount;
 
 public final class CurrentAccountCreator implements AccountCreator

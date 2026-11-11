@@ -32,10 +32,12 @@ public final class CurrentAccount extends Account
             throw new NegativeCurrentBalanceException("Exceedance of Overdraft Limit");
     }
     //
-    public long getOverdraftLimit() {
+    public long getOverdraftLimit()
+    {
         return overdraftLimit;
     }
-    public void setOverdraftLimit(long overdraftLimit) {
+    public void setOverdraftLimit(long overdraftLimit)
+    {
         this.overdraftLimit = overdraftLimit;
     }
 }

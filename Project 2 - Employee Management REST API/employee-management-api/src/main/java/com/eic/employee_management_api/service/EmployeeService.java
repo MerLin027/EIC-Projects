@@ -2,7 +2,6 @@ package com.eic.employee_management_api.service;
 
 import com.eic.employee_management_api.dto.EmployeeRequest;
 import com.eic.employee_management_api.dto.EmployeeResponse;
-import com.eic.employee_management_api.dto.PageResponse;
 import com.eic.employee_management_api.entity.Employee;
 import com.eic.employee_management_api.enumeration.EmployeeStatus;
 import com.eic.employee_management_api.exception.DuplicateResourceException;
@@ -11,11 +10,10 @@ import com.eic.employee_management_api.exception.ResourceNotFoundException;
 import com.eic.employee_management_api.mapper.EmployeeMapper;
 import com.eic.employee_management_api.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Comparator;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -32,18 +30,9 @@ public class EmployeeService
         return mapper.toResponse(repository.save(employee));
     }
     @Transactional(readOnly = true) // Indicates that the method is read-only -> No data is changed
-    public PageResponse findAll(Long page, Long size)
+    public Page <EmployeeResponse> findAll(Pageable pageable)
     {
-        Long totalElements = repository.count();
-        Long totalPages = (long) Math.ceil((double) repository.count() / size);
-        List <EmployeeResponse> responseList=  repository.findAll()
-                .stream()
-                .sorted(Comparator.comparing(Employee::getId))
-                .skip(page*size)
-                .limit(size)
-                .map(mapper::toResponse)
-                .toList();
-        return new PageResponse(responseList, page, size, totalElements, totalPages);
+        return repository.findAll(pageable).map(mapper::toResponse); // employee -> mapper.toResponse(employee)
     }
     @Transactional(readOnly = true) // Indicates that the method is read-only -> No data is changed
     public EmployeeResponse findById(Long id) throws ResourceNotFoundException
