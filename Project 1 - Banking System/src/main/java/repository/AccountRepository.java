@@ -6,6 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * In-memory storage for accounts, keyed by account number (backed by a {@link HashMap}). Shared as
+ * a singleton. Data is lost when the program ends, and the map itself is not thread-safe.
+ */
+
 public final class AccountRepository
 {
     private static volatile AccountRepository instance;

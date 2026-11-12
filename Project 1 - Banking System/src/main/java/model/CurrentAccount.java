@@ -4,6 +4,8 @@ import exception.NegativeCurrentBalanceException;
 
 import java.time.Instant;
 
+/** A current account. The balance may go negative, down to the overdraft limit (5000 by default). */
+
 public final class CurrentAccount extends Account
 {
     long overdraftLimit = 5000;
@@ -12,7 +14,13 @@ public final class CurrentAccount extends Account
     {
         super(accountNumber, password);
     }
-    //
+    /**
+     * Withdraws money as long as the balance does not fall below the negative overdraft limit.
+     *
+     * @param amount the amount to withdraw
+     * @return the new balance
+     * @throws NegativeCurrentBalanceException if the withdrawal would exceed the overdraft limit
+     */
     @Override
     public synchronized long withdraw(long amount) throws NegativeCurrentBalanceException
     {

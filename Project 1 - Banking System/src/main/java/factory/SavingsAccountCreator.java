@@ -2,6 +2,8 @@ package factory;
 
 import model.SavingsAccount;
 
+/** Creates {@link SavingsAccount} instances. */
+
 public final class SavingsAccountCreator implements AccountCreator
 {
     @Override

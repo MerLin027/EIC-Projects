@@ -4,6 +4,9 @@ import exception.NegativeSavingsBalanceException;
 
 import java.time.Instant;
 
+/** A savings account. The balance can never go below zero. */
+
+
 public final class SavingsAccount extends Account
 {
     //
@@ -11,7 +14,13 @@ public final class SavingsAccount extends Account
     {
         super(accountNumber, password);
     }
-    //
+    /**
+     * Withdraws money if the balance covers it.
+     *
+     * @param amount the amount to withdraw
+     * @return the new balance
+     * @throws NegativeSavingsBalanceException if the balance is lower than {@code amount}
+     */
     @Override
     public synchronized long withdraw(long amount) throws NegativeSavingsBalanceException
     {

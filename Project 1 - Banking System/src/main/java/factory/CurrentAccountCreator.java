@@ -2,6 +2,8 @@ package factory;
 
 import model.CurrentAccount;
 
+/** Creates {@link CurrentAccount} instances. */
+
 public final class CurrentAccountCreator implements AccountCreator
 {
     @Override

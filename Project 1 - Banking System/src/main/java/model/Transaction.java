@@ -2,6 +2,11 @@ package model;
 
 import java.time.Instant;
 
+/**
+ * One entry in an account's history: a deposit or a withdrawal, with its amount, the time it
+ * happened and the balance right after it.
+ */
+
 public final class Transaction
 {
     private String type;

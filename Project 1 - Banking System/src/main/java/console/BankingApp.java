@@ -14,6 +14,14 @@ import java.util.Optional;
 
 import static console.Constants.*;
 
+/**
+ * Console entry point and menu flow for the banking system.
+ *
+ * <p>Handles user interaction only: it reads choices through {@link ConsoleIO}, calls
+ * {@link BankService} and prints the results. Business rules live in the service layer.
+ * Business exceptions are caught here and shown as messages, so bad input never crashes the program.
+ */
+
 public final class BankingApp
 {
     private final BankService service = BankService.getInstance();
@@ -22,7 +30,10 @@ public final class BankingApp
     BankingApp()
     {
     }
-    //
+    /**
+     * Runs the main (logged-out) menu loop: create or delete an account, log in, view bank-wide
+     * reports, run the multithreading demo, or exit. A successful login opens {@link #accountMenu}.
+     */
     public void appMenu()
     {
         int choice;
@@ -138,7 +149,12 @@ public final class BankingApp
             }
         }
     }
-    //
+    /**
+     * Runs the menu loop for a logged-in account: deposit, withdraw, view balance and transactions,
+     * and update the password. Returns to the caller on logout.
+     *
+     * @param accountNumber the account the user has logged in to
+     */
     public void accountMenu(long accountNumber)
     {
         long accountBalance;
@@ -237,7 +253,10 @@ public final class BankingApp
             }
         }
     }
-    //
+    /**
+     * Starts the application. A closed input stream (Ctrl+D / Ctrl+Z) ends the program with a short
+     * message, and any unexpected error is reported instead of crashing.
+     */
     public static void main(String[] args)
     {
         // Application flow starts here

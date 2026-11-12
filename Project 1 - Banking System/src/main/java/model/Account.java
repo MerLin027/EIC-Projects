@@ -4,6 +4,15 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Base class for all bank accounts. Holds the account number, password, balance and transaction
+ * history. Sealed: only {@link SavingsAccount} and {@link CurrentAccount} may extend it.
+ *
+ * <p>A new account starts with a balance of 500, recorded as a first "Deposit" transaction.
+ * Deposits and withdrawals are synchronized on the account, so concurrent threads cannot
+ * lose updates. Each account has its own lock.
+ */
+
 public sealed abstract class Account permits SavingsAccount, CurrentAccount
 {
     protected long accountNumber;

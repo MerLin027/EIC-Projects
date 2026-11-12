@@ -15,6 +15,17 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
+/**
+ * Business logic of the banking system, between the console and the repository. It never reads
+ * or prints input; problems are reported through unchecked exceptions that the console handles.
+ *
+ * <p>Shared as a singleton. A package-private constructor accepts a repository so tests can
+ * inject a mock.
+ *
+ * <p>Methods that act on an existing account assume the caller is logged in, so the account
+ * exists; otherwise a {@link java.util.NoSuchElementException} is thrown.
+ */
+
 public class BankService
 {
     // private static final BankService instance = new BankService();

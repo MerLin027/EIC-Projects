@@ -1,5 +1,10 @@
 package console;
 
+/**
+ * Fixed texts and limits used by the console classes. Package-private on purpose, so nothing
+ * outside the {@code console} package can use it. Not instantiable.
+ */
+
 final class Constants
 {
     private Constants()
