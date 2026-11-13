@@ -21,9 +21,21 @@ A RESTful API for managing employee records using Spring technologies.
 - DTOs, validation, and global exception handling
 - Pagination, sorting, and Swagger/OpenAPI documentation
 
+### 3. Product Catalog + Authentication API — Spring Boot & JWT
+A secured REST API combining user authentication with a searchable product catalog.
+
+- User registration and login with BCrypt-encoded passwords
+- Stateless JWT authentication (24-hour token expiry) using Spring Security
+- Public endpoints (`/auth/**`) and JWT-protected endpoints (`/products/**`, `/categories/**`)
+- Category and Product CRUD with a one-to-many relationship
+- Search by name, filtering by category and price range
+- Pagination and sorting
+- DTOs, validation, and global exception handling with a consistent JSON error format
+- Swagger/OpenAPI documentation
+
 ## Tech Stack
 
-Java · Maven · Spring Boot · Spring Data JPA · H2/MySQL · Git
+Java · Maven · Spring Boot · Spring Security · JWT · Spring Data JPA · H2/MySQL · Swagger/OpenAPI · Git
 
 ---
 
