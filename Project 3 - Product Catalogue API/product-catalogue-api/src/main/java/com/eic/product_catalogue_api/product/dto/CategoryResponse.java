@@ -1,4 +1,7 @@
 package com.eic.product_catalogue_api.product.dto;
 
-public class CategoryResponse {
+import java.math.BigDecimal;
+
+public record CategoryResponse(Long id, String name)
+{
 }
