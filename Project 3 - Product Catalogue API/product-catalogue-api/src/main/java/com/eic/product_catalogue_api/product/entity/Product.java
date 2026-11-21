@@ -25,6 +25,5 @@ public class Product
     private BigDecimal price;
     @Column(nullable = false)
     private Long quantity;
-    @Column(nullable = false)
     private String description;
 }

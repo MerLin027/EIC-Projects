@@ -11,10 +11,12 @@ import org.mapstruct.MappingTarget;
 public interface CategoryMapper
 {
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "products", ignore = true)
     Category toEntity(CategoryRequest request);
     //
     CategoryResponse toResponse(Category category);
     //
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "products", ignore = true)
     Category updateEntity(CategoryRequest request, @MappingTarget Category category);
 }

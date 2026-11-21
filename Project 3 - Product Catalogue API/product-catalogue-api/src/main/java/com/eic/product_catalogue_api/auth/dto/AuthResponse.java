@@ -1,4 +1,13 @@
 package com.eic.product_catalogue_api.auth.dto;
 
-public record AuthResponse() {
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public record AuthResponse(Long id,
+                           String name,
+                           String email,
+                           String token,
+                           String tokenType,
+                           Long expiresIn)
+{
 }
